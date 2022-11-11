@@ -13,12 +13,12 @@ double Ki = 0.05; // Integral Constant
 double Kd = 61;   // Derivative Constant
 hw_timer_t *timer = NULL;
 
-unsigned long int motor1_target=0;
-unsigned long int motor2_target=0;
-unsigned long int motor3_target=0;
-unsigned long int motor4_target=0;
+unsigned long int motor1_target = 0;
+unsigned long int motor2_target = 0;
+unsigned long int motor3_target = 0;
+unsigned long int motor4_target = 0;
 
-char incomingByte;             // parses and stores each individual character one by one
+char incomingByte; // parses and stores each individual character one by one
 
 PIDController pidcontroller1;
 PIDController pidcontroller2;
@@ -41,7 +41,7 @@ void setup()
 
 void loop()
 {
-// serial_tune_pid();
+  serial_tune_pid();
   delay(500);
 }
 
@@ -57,7 +57,7 @@ void ARDUINO_ISR_ATTR onTimer()
     // Serial.print("收到的设定值：");
     // Serial.println(integerValue); // print the incoming value for debugging
     // Serial.print("编码器值：");
-    Serial.println(encoder1_count); // print the final encoder count.
+    Serial.println(encoder4_count); // print the final encoder count.
   }
   i++;
 }
@@ -92,10 +92,16 @@ void serial_tune_pid()
       Kd -= 0.1;
       break;
     case 'r':
-      integerValue += 358;  //358一圈
+      motor1_target += 358;
+      motor2_target += 358;
+      motor3_target += 358;
+      motor4_target += 358; // 358一圈
       break;
     case 'f':
-      integerValue -= 358;
+      motor1_target -= 358;
+      motor2_target -= 358;
+      motor3_target -= 358;
+      motor4_target -= 358;
       break;
     case 'p':
       Serial.println("--------------------");
@@ -117,6 +123,12 @@ void serial_tune_pid()
     Kd = 0;
   if (motor1_target < 0)
     motor1_target = 0;
+  if (motor2_target < 0)
+    motor2_target = 0;
+  if (motor3_target < 0)
+    motor3_target = 0;
+  if (motor4_target < 0)
+    motor4_target = 0;
 
   pidcontroller1.tune(Kp, Ki, Kd);
 }
