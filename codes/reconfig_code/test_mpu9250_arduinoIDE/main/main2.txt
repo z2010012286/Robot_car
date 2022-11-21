@@ -1,0 +1,47 @@
+//#include <Arduino.h>
+#include <micro_ros_arduino.h>
+#include <stdio.h>
+
+#include <rcl/rcl.h>
+#include <rcl/error_handling.h>
+#include <rclc/rclc.h>
+#include <rclc/executor.h>
+
+#include <nav_msgs/msg/odometry.h>
+#include <sensor_msgs/msg/imu.h>
+#include <geometry_msgs/msg/twist.h>
+#include <geometry_msgs/msg/vector3.h>
+
+#include "default_imu.h"
+#define LED_PIN 13
+
+MPU9250IMU imu;
+sensor_msgs__msg__Imu imu_msg;
+
+void publishData()
+{
+    imu_msg = imu.getData();
+}
+
+void setup() 
+{
+    pinMode(LED_PIN, OUTPUT);
+    Wire.begin();
+    Serial.begin(115200);
+    bool imu_ok = imu.init();
+    if(!imu_ok)
+    {
+        while(1)
+        {
+            digitalWrite(LED_PIN, HIGH);
+        }
+    }
+
+}
+
+void loop()
+{
+  publishData();
+  Serial.print(imu_msg.angular_velocity.x);
+  delay(1000);
+  }
