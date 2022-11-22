@@ -19,7 +19,7 @@
 #include "motor.h"
 #include "kinematics.h"
 #include "pid.h"
-#define LED_PIN 13
+
 #define RCCHECK(fn)                  \
     {                                \
         rcl_ret_t temp_rc = fn;      \
@@ -139,7 +139,8 @@ void setup()
         }
     }
 
-    set_microros_transports();
+    // set_microros_transports();
+    set_microros_wifi_transports("zhang", "2010012286", "192.168.199.66", 8888);
     state = WAITING_AGENT;
 }
 

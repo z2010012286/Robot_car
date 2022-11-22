@@ -3,7 +3,7 @@
  * @Email: tianci_zhang@tju.edu.cn
  * @Date: 2022-11-20 10:25:39
  * @LastEditors: Tianci Zhang
- * @LastEditTime: 2022-11-20 20:48:29
+ * @LastEditTime: 2022-11-22 20:58:20
  * @FilePath: \unit_test_encoder\src\main.cpp
  * @Description:
  *
@@ -113,16 +113,16 @@ void setup()
 void loop()
 {
   static int i;
-  if (i < 200)
-    moveBase(0, 0.5, 0);
-  if (i > 200 && i < 400)
-    moveBase(0, -0.5, 0);
-  if (i > 400 && i < 600)
-    moveBase(0.5, 0, 0);
-  if (i > 600 && i < 800)
-    moveBase(-0.5, 0, 0);
-  if (i > 800)
-    moveBase(0, 0, 2);
+  // if (i < 200)
+  //   moveBase(0, 0.5, 0);
+  // if (i > 200 && i < 400)
+  //   moveBase(0, -0.5, 0);
+  // if (i > 400 && i < 600)
+  //   moveBase(0.5, 0, 0);
+  // if (i > 600 && i < 800)
+  //   moveBase(-0.5, 0, 0);
+  // if (i > 800)
+  //   moveBase(0, 0, 2);
 
   delay(10);
   if ((i % 100) == 0)
