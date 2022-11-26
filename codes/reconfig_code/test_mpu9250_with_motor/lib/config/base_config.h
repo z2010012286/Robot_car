@@ -3,7 +3,7 @@
  * @Email: tianci_zhang@tju.edu.cn
  * @Date: 2022-11-16 16:27:10
  * @LastEditors: Tianci Zhang
- * @LastEditTime: 2022-11-22 20:53:17
+ * @LastEditTime: 2022-11-26 19:18:13
  * @FilePath: \test_mpu9250_with_motor\lib\config\base_config.h
  * @Description: 
  * 
@@ -13,10 +13,10 @@
 #ifndef BASE_CONFIG_H
 #define BASE_CONFIG_H
 
-#define LED_PIN 13 //used for debugging status
+#define LED_PIN 33 //used for debugging status
 
 #define K_P 1.6                             // P constant
-#define K_I 0.8                             // I constant
+#define K_I 0.2                             // I constant
 #define K_D 0.5                             // D constant
 
 /*
@@ -29,7 +29,7 @@ ROBOT ORIENTATION
 
 //define your robot' specs here
 #define MOTOR_MAX_RPM 230                   // motor's max RPM          
-#define MAX_RPM_RATIO 0.85                  // max RPM allowed for each MAX_RPM_ALLOWED = MOTOR_MAX_RPM * MAX_RPM_RATIO          
+#define MAX_RPM_RATIO 0.5                  // max RPM allowed for each MAX_RPM_ALLOWED = MOTOR_MAX_RPM * MAX_RPM_RATIO          
 #define MOTOR_OPERATING_VOLTAGE 12          // motor's operating voltage (used to calculate max RPM)
 #define MOTOR_POWER_MAX_VOLTAGE 12          // max voltage of the motor's power source (used to calculate max RPM)
 #define MOTOR_POWER_MEASURED_VOLTAGE 12     // current voltage reading of the power connected to the motor (used for calibration)

@@ -3,8 +3,8 @@
  * @Email: tianci_zhang@tju.edu.cn
  * @Date: 2022-11-15 17:27:36
  * @LastEditors: Tianci Zhang
- * @LastEditTime: 2022-11-26 20:58:04
- * @FilePath: \test_mpu9250_with_motor\lib\imu\default_imu.h
+ * @LastEditTime: 2022-11-18 15:13:32
+ * @FilePath: \test_mpu9250\lib\imu\default_imu.h
  * @Description:
  *
  * Copyright (c) 2022 by Tianci Zhang, All Rights Reserved.

@@ -14,7 +14,7 @@
 
 #include "base_config.h"
 #include "default_imu.h"
-#include <ESP32Encoder.h>
+#include "ESP32Encoder.h"
 #include "odometry.h"
 #include "motor.h"
 #include "kinematics.h"
@@ -63,6 +63,7 @@ rclc_support_t support;
 rcl_allocator_t allocator;
 rcl_node_t node;
 rcl_timer_t control_timer;
+rcl_timer_t publisher_timer;
 
 unsigned long long time_offset = 0;
 unsigned long prev_cmd_time = 0;
@@ -99,7 +100,7 @@ PID motor4_pid(PWM_MIN, PWM_MAX, K_P, K_I, K_D);
 
 Kinematics kinematics(
     Kinematics::MECANUM,
-    MOTOR_MAX_RPM,
+    MOTOR_MAX_RPM *MAX_RPM_RATIO,
     WHEEL_DIAMETER,
     LR_WHEELS_DISTANCE,
     FR_WHEELS_DISTANCE);
@@ -114,19 +115,25 @@ bool createEntities();
 void moveBase();
 void twistCallback(const void *msgin);
 void controlCallback(rcl_timer_t *timer, int64_t last_call_time);
+void publisherCallback(rcl_timer_t *timer, int64_t last_call_time);
 void syncTime();
 void fullStop();
 
 void setup()
 {
-    motor1_encoder.attachHalfQuad(MOTOR1_ENCODER_A, MOTOR1_ENCODER_B);
+    motor1_encoder.attachFullQuad(MOTOR1_ENCODER_A, MOTOR1_ENCODER_B);
     motor1_encoder.setCount(0);
-    motor2_encoder.attachHalfQuad(MOTOR2_ENCODER_A, MOTOR2_ENCODER_B);
+    motor2_encoder.attachFullQuad(MOTOR2_ENCODER_A, MOTOR2_ENCODER_B);
     motor2_encoder.setCount(0);
-    motor3_encoder.attachHalfQuad(MOTOR3_ENCODER_A, MOTOR3_ENCODER_B);
+    motor3_encoder.attachFullQuad(MOTOR3_ENCODER_A, MOTOR3_ENCODER_B);
     motor3_encoder.setCount(0);
-    motor4_encoder.attachHalfQuad(MOTOR4_ENCODER_A, MOTOR4_ENCODER_B);
+    motor4_encoder.attachFullQuad(MOTOR4_ENCODER_A, MOTOR4_ENCODER_B);
     motor4_encoder.setCount(0);
+
+    motor1_controller.brake();
+    motor2_controller.brake();
+    motor3_controller.brake();
+    motor4_controller.brake();
 
     pinMode(LED_PIN, OUTPUT);
     Wire.begin();
@@ -139,8 +146,8 @@ void setup()
         }
     }
 
-    // set_microros_transports();
-    set_microros_wifi_transports("zhang", "2010012286", "192.168.199.66", 8888);
+    set_microros_transports();
+    // set_microros_wifi_transports("zhang", "2010012286", "192.168.199.124", 8888);
     state = WAITING_AGENT;
 }
 
@@ -180,6 +187,16 @@ void controlCallback(rcl_timer_t *timer, int64_t last_call_time)
     if (timer != NULL)
     {
         moveBase();
+        
+    }
+}
+
+void publisherCallback(rcl_timer_t *timer, int64_t last_call_time)
+{
+    RCLC_UNUSED(last_call_time);
+    if (timer != NULL)
+    {
+       
         publishData();
     }
 }
@@ -199,13 +216,13 @@ bool createEntities()
     // create node
     RCCHECK(rclc_node_init_default(&node, "tianci_robot_node", "", &support));
     // create odometry publisher
-    RCCHECK(rclc_publisher_init_default(
+    RCCHECK(rclc_publisher_init_best_effort(
         &odom_publisher,
         &node,
         ROSIDL_GET_MSG_TYPE_SUPPORT(nav_msgs, msg, Odometry),
         "odom/unfiltered"));
     // create IMU publisher
-    RCCHECK(rclc_publisher_init_default(
+    RCCHECK(rclc_publisher_init_best_effort(
         &imu_publisher,
         &node,
         ROSIDL_GET_MSG_TYPE_SUPPORT(sensor_msgs, msg, Imu),
@@ -218,13 +235,19 @@ bool createEntities()
         "cmd_vel"));
     // create timer for actuating the motors at 50 Hz (1000/20)
     const unsigned int control_timeout = 20;
+    const unsigned int publisher_timeout = 100;
     RCCHECK(rclc_timer_init_default(
         &control_timer,
         &support,
         RCL_MS_TO_NS(control_timeout),
         controlCallback));
+    RCCHECK(rclc_timer_init_default(
+        &publisher_timer,
+        &support,
+        RCL_MS_TO_NS(publisher_timeout),
+        publisherCallback));
     executor = rclc_executor_get_zero_initialized_executor();
-    RCCHECK(rclc_executor_init(&executor, &support.context, 2, &allocator));
+    RCCHECK(rclc_executor_init(&executor, &support.context, 3, &allocator));
     RCCHECK(rclc_executor_add_subscription(
         &executor,
         &twist_subscriber,
@@ -232,6 +255,7 @@ bool createEntities()
         &twistCallback,
         ON_NEW_DATA));
     RCCHECK(rclc_executor_add_timer(&executor, &control_timer));
+    RCCHECK(rclc_executor_add_timer(&executor, &publisher_timer));
 
     // synchronize time with the agent
     syncTime();
@@ -250,6 +274,7 @@ bool destroyEntities()
     rcl_subscription_fini(&twist_subscriber, &node);
     rcl_node_fini(&node);
     rcl_timer_fini(&control_timer);
+    rcl_timer_fini(&publisher_timer);
     rclc_executor_fini(&executor);
     rclc_support_fini(&support);
 
@@ -273,7 +298,7 @@ void fullStop()
 void moveBase()
 {
     // brake if there's no command received, or when it's only the first command sent
-    if (((millis() - prev_cmd_time) >= 200))
+    if (((millis() - prev_cmd_time) >= 300))
     {
         twist_msg.linear.x = 0.0;
         twist_msg.linear.y = 0.0;
