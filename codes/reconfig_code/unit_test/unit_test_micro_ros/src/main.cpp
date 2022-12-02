@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include <micro_ros_arduino.h>
+#include "micro_ros_arduino.h"
 #include <stdio.h>
 
 #include <rcl/rcl.h>
@@ -20,6 +20,23 @@
 #include "kinematics.h"
 #include "pid.h"
 
+/// @brief 函数声明
+void rclErrorLoop();
+void my_errorLoop();
+void flashLED(int n_times);
+struct timespec getTime();
+// void publishData();
+bool destroyEntities();
+bool createEntities();
+void moveBase();
+void twistCallback(const void *msgin);
+void controlCallback(rcl_timer_t *timer, int64_t last_call_time);
+void publisherCallback(rcl_timer_t *timer, int64_t last_call_time);
+void publishOdomData();
+void publishIMUData();
+void syncTime();
+void fullStop();
+
 #define RCCHECK(fn)                  \
     {                                \
         rcl_ret_t temp_rc = fn;      \
@@ -33,8 +50,9 @@
         rcl_ret_t temp_rc = fn;      \
         if ((temp_rc != RCL_RET_OK)) \
         {                            \
+            my_errorLoop();          \
         }                            \
-    }
+    }                                
 #define EXECUTE_EVERY_N_MS(MS, X)          \
     do                                     \
     {                                      \
@@ -107,21 +125,8 @@ Kinematics kinematics(
     LR_WHEELS_DISTANCE,
     FR_WHEELS_DISTANCE);
 
-/// @brief 函数声明
-void rclErrorLoop();
-void flashLED(int n_times);
-struct timespec getTime();
-// void publishData();
-bool destroyEntities();
-bool createEntities();
-void moveBase();
-void twistCallback(const void *msgin);
-void controlCallback(rcl_timer_t *timer, int64_t last_call_time);
-void publisherCallback(rcl_timer_t *timer, int64_t last_call_time);
-void publishOdomData();
-void publishIMUData();
-void syncTime();
-void fullStop();
+
+
 
 void setup()
 {
@@ -155,9 +160,9 @@ void setup()
     Serial1.begin(115200, SERIAL_8N1, 33, 32);
     // set_microros_wifi_transports("zhang", "2010012286", "192.168.199.124", 8888);
     state = WAITING_AGENT;
-    unsigned long duration = millis() - start;
-    Serial1.print("setup duration: ");
-    Serial1.println(duration);
+    // unsigned long duration = millis() - start;
+    // Serial1.print("setup duration: ");
+    // Serial1.println(duration);
 }
 
 void loop()
@@ -192,13 +197,13 @@ void loop()
 
 void controlCallback(rcl_timer_t *timer, int64_t last_call_time)
 {
-    unsigned long start = millis();
+    // unsigned long start = millis();
     RCLC_UNUSED(last_call_time);
     if (timer != NULL)
     {
         moveBase();
     }
-    unsigned long duration = millis() - start;
+    // unsigned long duration = millis() - start;
     // Serial1.print("controCallback duration: ");
     // Serial1.println(duration);
 }
@@ -211,20 +216,23 @@ void odom_publisherCallback(rcl_timer_t *timer, int64_t last_call_time)
     {
         publishOdomData();
     }
+    Serial1.print("running time: ");
+    Serial1.print(start);
+    Serial1.print("     ");
     unsigned long duration = millis() - start;
-    // Serial1.print("odom_publisherCallback duration: ");
-    // Serial1.println(duration);
+    Serial1.print("odom_publish duration: ");
+    Serial1.println(duration);
 }
 
 void imu_publisherCallback(rcl_timer_t *timer, int64_t last_call_time)
 {
-    unsigned long start = millis();
+    // unsigned long start = millis();
     RCLC_UNUSED(last_call_time);
     if (timer != NULL)
     {
         publishIMUData();
     }
-    unsigned long duration = millis() - start;
+    // unsigned long duration = millis() - start;
     // Serial1.print("imu_publisherCallback duration: ");
     // Serial1.println(duration);
 }
@@ -247,19 +255,19 @@ bool createEntities()
     // create odometry publisher
     // 似乎odom无法使用best_effort通讯,本硬件配置下~45hz
     // odom设置为20Hz， IMU为50Hz， control为100Hz
-    RCCHECK(rclc_publisher_init_default(
+    RCCHECK(rclc_publisher_init_best_effort(
         &odom_publisher,
         &node,
         ROSIDL_GET_MSG_TYPE_SUPPORT(nav_msgs, msg, Odometry),
         "odom/unfiltered"));
     // create IMU publisher
-    RCCHECK(rclc_publisher_init_default(
+    RCCHECK(rclc_publisher_init_best_effort(
         &imu_publisher,
         &node,
         ROSIDL_GET_MSG_TYPE_SUPPORT(sensor_msgs, msg, Imu),
         "imu/data"));
     // create twist command subscriber
-    RCCHECK(rclc_subscription_init_default(
+    RCCHECK(rclc_subscription_init_best_effort(
         &twist_subscriber,
         &node,
         ROSIDL_GET_MSG_TYPE_SUPPORT(geometry_msgs, msg, Twist),
@@ -284,7 +292,7 @@ bool createEntities()
         RCL_MS_TO_NS(imu_publisher_timeout),
         imu_publisherCallback));
     executor = rclc_executor_get_zero_initialized_executor();
-    RCCHECK(rclc_executor_init(&executor, &support.context, 8, &allocator));
+    RCCHECK(rclc_executor_init(&executor, &support.context, 4, &allocator));
     RCCHECK(rclc_executor_add_subscription(
         &executor,
         &twist_subscriber,
@@ -385,11 +393,12 @@ void publishOdomData()
     struct timespec time_stamp = getTime();
     odom_msg.header.stamp.sec = time_stamp.tv_sec;
     odom_msg.header.stamp.nanosec = time_stamp.tv_nsec;
-    unsigned long start = millis();
+    // unsigned long start = millis();
     RCSOFTCHECK(rcl_publish(&odom_publisher, &odom_msg, NULL));
-    unsigned long odom_rcl_publisher_duration = millis() - start;
-    Serial1.print("odom_publisher RCSOFTCHECK duration: ");
-    Serial1.println(odom_rcl_publisher_duration);
+    // unsigned long odom_rcl_publisher_duration = millis() - start;
+    // Serial1.print("odom_publisher RCSOFTCHECK duration: ");
+    // Serial1.println(odom_rcl_publisher_duration);
+    // Serial1.println(odom_msg.header.stamp.nanosec);
 }
 
 void publishIMUData()
@@ -398,11 +407,11 @@ void publishIMUData()
     struct timespec time_stamp = getTime();
     imu_msg.header.stamp.sec = time_stamp.tv_sec;
     imu_msg.header.stamp.nanosec = time_stamp.tv_nsec;
-    unsigned long start = millis();
+    // unsigned long start = millis();
     RCSOFTCHECK(rcl_publish(&imu_publisher, &imu_msg, NULL));
-    unsigned long oimu_rcl_publisher_duration = millis() - start;
-    Serial1.print("imu_publisher RCSOFTCHECK duration: ");
-    Serial1.println(oimu_rcl_publisher_duration);
+    // unsigned long oimu_rcl_publisher_duration = millis() - start;
+    // Serial1.print("imu_publisher RCSOFTCHECK duration: ");
+    // Serial1.println(oimu_rcl_publisher_duration);
 }
 
 void syncTime()
@@ -431,8 +440,15 @@ void rclErrorLoop()
 {
     while (true)
     {
-        flashLED(2);
+        Serial1.println("rclError");
     }
+}
+
+void my_errorLoop()
+{
+     
+        Serial1.println("soft_error1");
+   
 }
 
 void flashLED(int n_times)

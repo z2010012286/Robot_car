@@ -3,8 +3,8 @@
  * @Email: tianci_zhang@tju.edu.cn
  * @Date: 2022-11-15 10:56:10
  * @LastEditors: Tianci Zhang
- * @LastEditTime: 2022-11-19 21:43:00
- * @FilePath: \test_mpu9250_with_motor\lib\odometry\odometry.cpp
+ * @LastEditTime: 2022-12-01 22:14:42
+ * @FilePath: \unit_test_micro_ros\lib\odometry\odometry.cpp
  * @Description:
  *
  * Copyright (c) 2022 by Tianci Zhang, All Rights Reserved.
@@ -20,17 +20,18 @@ Odometry::Odometry() : x_pos_(0.0),
     // odom_msg_.child_frame_id = micro_ros_string_utilities_set(odom_msg_.child_frame_id, "base_footprint");
     // odom_msg_.header.frame_id.data = "odom"; // micro_ros foxy版本写法，其他高版本使用上面两行
     // odom_msg_.child_frame_id.data = "base_footprint";
-    odom_msg_.header.frame_id.data = (char *)malloc(100 * sizeof(char));
-    char string3[] = "/odom";
-    memcpy(odom_msg_.header.frame_id.data, string3, strlen(string3) + 1);
-    odom_msg_.header.frame_id.size = strlen(odom_msg_.header.frame_id.data);
-    odom_msg_.header.frame_id.capacity = 100;
 
-    odom_msg_.child_frame_id.data = (char *)malloc(100 * sizeof(char));
-    char string2[] = "/base_footprint";
-    memcpy(odom_msg_.child_frame_id.data, string2, strlen(string2) + 1);
-    odom_msg_.child_frame_id.size = strlen(odom_msg_.child_frame_id.data);
-    odom_msg_.child_frame_id.capacity = 100;
+    // odom_msg_.header.frame_id.data = (char *)malloc(100 * sizeof(char));
+    // char string3[] = "/odom";
+    // memcpy(odom_msg_.header.frame_id.data, string3, strlen(string3) + 1);
+    // odom_msg_.header.frame_id.size = strlen(odom_msg_.header.frame_id.data);
+    // odom_msg_.header.frame_id.capacity = 100;
+
+    // odom_msg_.child_frame_id.data = (char *)malloc(100 * sizeof(char));
+    // char string2[] = "/base_footprint";
+    // memcpy(odom_msg_.child_frame_id.data, string2, strlen(string2) + 1);
+    // odom_msg_.child_frame_id.size = strlen(odom_msg_.child_frame_id.data);
+    // odom_msg_.child_frame_id.capacity = 100;
 
 }
 

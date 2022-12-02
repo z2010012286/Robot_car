@@ -112,7 +112,7 @@ void setup()
     pinMode(LED_PIN, OUTPUT);
     Wire.begin();
     Serial.begin(115200);
-    Serial1.begin(115200,SERIAL_8N1,33,32);
+    Serial1.begin(115200, SERIAL_8N1, 33, 32);
     // Serial2.begin(115200);
     bool imu_ok = imu.init();
     if (!imu_ok)
@@ -126,7 +126,7 @@ void setup()
 
 void moveBase(float g_req_linear_vel_x, float g_req_linear_vel_y, float g_req_angular_vel_z)
 {
-    
+
     unsigned long now = millis();
     // get the required rpm for each motor based on required velocities, and base used
     Kinematics::rpm req_rpm = kinematics.getRPM(g_req_linear_vel_x, g_req_linear_vel_y, g_req_angular_vel_z);
@@ -145,7 +145,7 @@ void moveBase(float g_req_linear_vel_x, float g_req_linear_vel_y, float g_req_an
     motor4_controller.spin(motor4_pid.compute(req_rpm.motor4, current_rpm4));
 
     current_vel = kinematics.getVelocities(current_rpm1, current_rpm2, current_rpm3, current_rpm4);
-        unsigned long duration = millis() - now;
+    unsigned long duration = millis() - now;
     Serial.printf("movebase duration: ");
     Serial.println(duration);
 }
@@ -153,7 +153,7 @@ void moveBase(float g_req_linear_vel_x, float g_req_linear_vel_y, float g_req_an
 void loop()
 
 {
-    moveBase(0,0,0);
+    moveBase(0, 0, 0);
     publishOdomData();
     publishIMUData();
     Serial1.print("hello");
@@ -189,8 +189,8 @@ void publishOdomData()
     unsigned long duration = millis() - now;
     Serial.printf("odom duration: ");
     Serial.println(duration);
-    //         Serial.printf("odom size: ");
-    // Serial.println(sizeof(odom_msg));
+    Serial.printf("odom size: ");
+    Serial.println(sizeof(odom_msg));
 }
 
 void publishIMUData()

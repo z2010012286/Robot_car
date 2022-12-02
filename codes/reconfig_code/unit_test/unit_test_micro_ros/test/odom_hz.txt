@@ -1,0 +1,55 @@
+tianci@tianci:~$ ros2 topic hz /odom/unfiltered 
+WARNING: topic [/odom/unfiltered] does not appear to be published yet
+average rate: 2.299
+	min: 0.097s max: 1.108s std dev: 0.47601s window: 3
+average rate: 1.626
+	min: 0.097s max: 1.108s std dev: 0.44828s window: 5
+average rate: 1.677
+	min: 0.048s max: 3.380s std dev: 0.92067s window: 12
+average rate: 0.962
+	min: 0.048s max: 6.352s std dev: 1.77039s window: 13
+average rate: 0.983
+	min: 0.048s max: 6.352s std dev: 1.65342s window: 15
+average rate: 0.941
+	min: 0.048s max: 6.352s std dev: 1.62161s window: 17
+average rate: 1.253
+	min: 0.048s max: 6.352s std dev: 1.42681s window: 24
+average rate: 1.190
+	min: 0.048s max: 6.352s std dev: 1.42092s window: 26
+average rate: 1.303
+	min: 0.048s max: 6.352s std dev: 1.32874s window: 31
+average rate: 1.184
+	min: 0.048s max: 6.352s std dev: 1.37636s window: 32
+average rate: 1.203
+	min: 0.048s max: 6.352s std dev: 1.34024s window: 34
+average rate: 1.290
+	min: 0.048s max: 6.352s std dev: 1.27994s window: 38
+average rate: 1.150
+	min: 0.048s max: 6.352s std dev: 1.39122s window: 39
+average rate: 1.206
+	min: 0.048s max: 6.352s std dev: 1.33536s window: 43
+average rate: 1.189
+	min: 0.048s max: 6.352s std dev: 1.32243s window: 44
+average rate: 1.163
+	min: 0.048s max: 6.352s std dev: 1.32110s window: 46
+average rate: 1.126
+	min: 0.048s max: 6.352s std dev: 1.32058s window: 47
+average rate: 1.178
+	min: 0.048s max: 6.352s std dev: 1.28186s window: 51
+average rate: 1.284
+	min: 0.048s max: 6.352s std dev: 1.23116s window: 57
+average rate: 1.269
+	min: 0.048s max: 6.352s std dev: 1.22240s window: 58
+average rate: 1.283
+	min: 0.048s max: 6.352s std dev: 1.20162s window: 61
+average rate: 1.236
+	min: 0.048s max: 6.352s std dev: 1.22386s window: 64
+average rate: 1.228
+	min: 0.048s max: 6.352s std dev: 1.21523s window: 65
+average rate: 1.230
+	min: 0.048s max: 6.352s std dev: 1.20094s window: 67
+average rate: 1.080
+	min: 0.048s max: 8.517s std dev: 1.51034s window: 68
+average rate: 1.046
+	min: 0.048s max: 8.517s std dev: 1.51962s window: 69
+^Ctianci@tianci:~$ 

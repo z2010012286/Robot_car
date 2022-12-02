@@ -1,0 +1,69 @@
+tianci@tianci:~$ ros2 topic hz /imu
+/imu/data
+tianci@tianci:~$ ros2 topic hz /imu
+/imu/data
+tianci@tianci:~$ ros2 topic hz /imu/data
+WARNING: topic [/imu/data] does not appear to be published yet
+average rate: 22.584
+	min: 0.012s max: 0.372s std dev: 0.06758s window: 28
+average rate: 12.572
+	min: 0.012s max: 1.064s std dev: 0.18174s window: 36
+average rate: 10.608
+	min: 0.012s max: 1.064s std dev: 0.18373s window: 42
+average rate: 8.752
+	min: 0.012s max: 1.064s std dev: 0.22178s window: 44
+average rate: 7.586
+	min: 0.012s max: 1.064s std dev: 0.23452s window: 46
+average rate: 9.198
+	min: 0.012s max: 1.064s std dev: 0.20223s window: 65
+average rate: 8.370
+	min: 0.012s max: 1.064s std dev: 0.20878s window: 68
+average rate: 8.409
+	min: 0.012s max: 1.064s std dev: 0.21649s window: 83
+average rate: 7.724
+	min: 0.012s max: 1.064s std dev: 0.23091s window: 88
+average rate: 7.050
+	min: 0.012s max: 1.232s std dev: 0.25732s window: 89
+average rate: 6.597
+	min: 0.012s max: 1.232s std dev: 0.27191s window: 90
+average rate: 6.316
+	min: 0.012s max: 1.232s std dev: 0.28103s window: 98
+average rate: 6.213
+	min: 0.011s max: 1.232s std dev: 0.28361s window: 107
+average rate: 5.801
+	min: 0.011s max: 2.280s std dev: 0.33853s window: 115
+average rate: 5.702
+	min: 0.011s max: 2.280s std dev: 0.34077s window: 120
+average rate: 5.323
+	min: 0.011s max: 2.280s std dev: 0.35194s window: 123
+average rate: 5.810
+	min: 0.011s max: 2.280s std dev: 0.33546s window: 144
+average rate: 6.159
+	min: 0.010s max: 2.280s std dev: 0.32174s window: 159
+average rate: 6.302
+	min: 0.010s max: 2.280s std dev: 0.31417s window: 169
+average rate: 6.238
+	min: 0.010s max: 2.280s std dev: 0.31385s window: 178
+average rate: 6.220
+	min: 0.010s max: 2.280s std dev: 0.30991s window: 185
+average rate: 6.096
+	min: 0.010s max: 2.280s std dev: 0.31434s window: 188
+average rate: 6.262
+	min: 0.010s max: 2.280s std dev: 0.30876s window: 204
+average rate: 5.975
+	min: 0.010s max: 2.280s std dev: 0.31805s window: 206
+average rate: 5.982
+	min: 0.010s max: 2.280s std dev: 0.31655s window: 219
+average rate: 5.945
+	min: 0.000s max: 2.280s std dev: 0.31536s window: 225
+average rate: 5.824
+	min: 0.000s max: 2.280s std dev: 0.32084s window: 228
+average rate: 5.621
+	min: 0.000s max: 2.280s std dev: 0.32781s window: 230
+average rate: 5.273
+	min: 0.000s max: 3.364s std dev: 0.38316s window: 238
+average rate: 5.481
+	min: 0.000s max: 3.364s std dev: 0.37371s window: 253
+average rate: 5.408
+	min: 0.000s max: 3.364s std dev: 0.37526s window: 257
+^Ctianci@tianci:~$ 
